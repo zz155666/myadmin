@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.system.dao.CorpDao">
+
+	<select id="get" resultType="com.bootdo.system.domain.CorpDO">
+		select `corp_id`,`name`,`end_time` from user_corp where corp_id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.system.domain.CorpDO">
+		select `corp_id`,`name`,`end_time` from user_corp
+        <where>  
+		  		  <if test="corpId != null and corpId != ''"> and corp_id = #{corpId} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="endTime != null and endTime != ''"> and end_time = #{endTime} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by corp_id
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from user_corp
+		 <where>  
+		  		  <if test="corpId != null and corpId != ''"> and corp_id = #{corpId} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="endTime != null and endTime != ''"> and end_time = #{endTime} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.system.domain.CorpDO" useGeneratedKeys="true" keyProperty="corpId">
+		insert into user_corp
+		(
+			`name`, 
+			`end_time`
+		)
+		values
+		(
+			#{name}, 
+			#{endTime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.bootdo.system.domain.CorpDO">
+		update user_corp 
+		<set>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="endTime != null">`end_time` = #{endTime}</if>
+		</set>
+		where corp_id = #{corpId}
+	</update>
+	
+	<delete id="remove">
+		delete from user_corp where corp_id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from user_corp where corp_id in 
+		<foreach item="corpId" collection="array" open="(" separator="," close=")">
+			#{corpId}
+		</foreach>
+	</delete>
+
+</mapper>
