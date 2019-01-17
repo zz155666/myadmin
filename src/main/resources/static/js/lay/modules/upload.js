@@ -343,7 +343,7 @@ layui.define('layer' , function(exports){
     if(options.size > 0 && !(device.ie && device.ie < 10)){
       var limitSize;
       layui.each(that.chooseFiles, function(index, file){
-        if(file.size > 1024*options.size){
+        if(file.size > 1024*options.size*1024*1024){
           var size = options.size/1024;
           size = size >= 1 
             ? (Math.floor(size) + (size%1 > 0 ? size.toFixed(1) : 0)) + 'MB' 
